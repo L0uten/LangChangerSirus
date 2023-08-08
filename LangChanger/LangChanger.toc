@@ -1,0 +1,9 @@
+## Interface: 30300
+## Title: Language Changer
+## Notes: Упрощенная смена языка
+## Author: Exboyfriend
+## Version: 1.0
+## SavedVariables: LGCH_DB
+
+libs\LoutenLib\LoutenLib.lua
+core.lua
