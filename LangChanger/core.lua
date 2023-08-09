@@ -3,7 +3,7 @@ local LoutenLib, LGCH = unpack(Engine)
 
 LoutenLib:InitAddon("LangChanger", "Language Changer", "1.0")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "09", "01", "02", "00")
+LGCH:SetRevision("2023", "08", "09", "01", "02", "01")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -89,13 +89,7 @@ LGCH.AddonReady:SetScript("OnUpdate", function()
         LGCH.InitActualLangsList()
         LGCH.CreateDropDown(LGCH.GetDefaultLanguage())
         LGCH.SetLangs()
-        for i = 1, #LGCH.ActualLangList do
-            if (LGCH.GetDefaultLanguage() == LGCH.ActualLangList[i]) then
-                LGCH.LangIndex = i
-                break
-            end
-            LGCH.LangIndex = 1
-        end
+        LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.GetDefaultLanguage()) or 1
         LGCH.LangLFGChangeFunc()
     end
 end)
@@ -199,7 +193,6 @@ function LGCH.SetLangs()
                 _, name = GetChannelName(tonumber(ChatFrame1EditBox:GetAttribute("channelTarget")))
             end
             LGCH.ChangeLang(LGCH.ActualLangList[i], true, tostring(name))
-            LGCH.LangIndex = i
         end)
     end
 end
@@ -216,6 +209,7 @@ function LGCH.ChangeLang(lang, isForced, channelName)
             LGCH.LangLFGChange.ForceStop = "none"
         end
     end
+    LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, lang)
     LGCH.LangFrame.DropDownButton.Text:SetText(lang)
     LanguageMenu:GetParent().chatFrame.editBox.language = lang
     LGCH.LangFrame.CloseDD()

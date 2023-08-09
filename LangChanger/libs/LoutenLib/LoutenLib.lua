@@ -776,6 +776,14 @@ Engine[1].DelayAction = function(s, time, func, cancelSameFunc)
     end
 end
 
+Engine[1].IndexOf = function(s, table, item)
+    for key, value in ipairs(table) do
+        if (value == item) then
+            return key
+        end
+    end
+    return nil
+end
 
 
 
