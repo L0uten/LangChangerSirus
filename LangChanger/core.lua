@@ -3,7 +3,7 @@ local LoutenLib, LGCH = unpack(Engine)
 
 LoutenLib:InitAddon("LangChanger", "Language Changer", "1.0")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "09", "01", "01", "00")
+LGCH:SetRevision("2023", "08", "09", "01", "02", "00")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -48,7 +48,7 @@ LGCH.LangLFGChange = CreateFrame("Frame")
 LGCH.LangLFGChange.ForceStop = "none"
 function LGCH.LangLFGChangeFunc()
     if (UnitDebuff("player", "Ренегат")) then
-        LGCH.LangLFGChange:SetScript("OnUpdate", function ()
+        LGCH.LangLFGChange:HookScript("OnUpdate", function ()
             if (ChatFrame1EditBox:IsShown()) then
                 if (ChatFrame1EditBox:GetAttribute("chatType") == "CHANNEL") then
                     local id, name = GetChannelName(tonumber(ChatFrame1EditBox:GetAttribute("channelTarget")))
