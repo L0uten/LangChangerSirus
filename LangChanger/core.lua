@@ -3,7 +3,7 @@ local LoutenLib, LGCH = unpack(Engine)
 
 LoutenLib:InitAddon("LangChanger", "Language Changer", "1.0")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "09", "01", "02", "01")
+LGCH:SetRevision("2023", "08", "10", "00", "00", "01")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -248,6 +248,7 @@ function LGCH.InitSettings()
                 LGCH.InitActualLangsList()
                 LGCH.LangFrame:WipeDropDownList()
                 LGCH.CreateDropDown(LanguageMenu:GetParent().chatFrame.editBox.language)
+                LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.GetDefaultLanguage()) or 1
                 LGCH.SetLangs()
             end)
         LGCH.Settings.LangsCB[i].CheckButton:SetBackdrop({
