@@ -1,9 +1,9 @@
 local AddOnName, Engine = ...
 local LoutenLib, LGCH = unpack(Engine)
 
-LoutenLib:InitAddon("LangChanger", "Language Changer", "1.0")
+LoutenLib:InitAddon("LangChanger", "Language Changer", "1.01")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "10", "00", "00", "01")
+LGCH:SetRevision("2023", "08", "12", "00", "00", "01")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -43,11 +43,12 @@ LGCH.LangFrame = nil
 LGCH.Settings = nil
 
 LGCH.LangIndex = nil
+LGCH.IsRenegade = nil
 
 LGCH.LangLFGChange = CreateFrame("Frame")
 LGCH.LangLFGChange.ForceStop = "none"
 function LGCH.LangLFGChangeFunc()
-    if (UnitDebuff("player", "Ренегат")) then
+    if (LGCH.IsRenegade) then
         LGCH.LangLFGChange:HookScript("OnUpdate", function ()
             if (ChatFrame1EditBox:IsShown()) then
                 if (ChatFrame1EditBox:GetAttribute("chatType") == "CHANNEL") then
@@ -80,6 +81,13 @@ function LGCH.LangLFGChangeFunc()
     end
 end
 
+local ZoneChanged = CreateFrame("Frame")
+ZoneChanged:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+ZoneChanged:SetScript("OnEvent", function()
+    LGCH.GetDefaultLanguage()
+    LGCH.ChangeLang(LGCH.ActualLangList[LGCH.LangIndex] or LGCH.GetDefaultLanguage())
+end)
+
 LGCH.AddonReady = CreateFrame("Frame")
 LGCH.AddonReady:SetScript("OnUpdate", function()
     if (GetNumLanguages()) then
@@ -96,7 +104,8 @@ end)
 
 function LGCH.GetDefaultLanguage()
     -- Сирус сломал функцию GetDefaultLanguage() при входе в игру, так что такой вот костыль...
-    if (UnitDebuff("player", "Ренегат")) then
+    if (UnitDebuff("player", "Ренегат") or LGCH.IsRenegade) then
+        LGCH.IsRenegade = true
         return "арго скорпидов"
     elseif (UnitDebuff("player", "Орда")) then
         return "орочий"

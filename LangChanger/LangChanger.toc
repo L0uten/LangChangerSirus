@@ -2,7 +2,7 @@
 ## Title: Language Changer
 ## Notes: Упрощенная смена языка
 ## Author: Exboyfriend
-## Version: 1.0
+## Version: 1.01
 ## SavedVariables: LGCH_DB
 
 libs\LoutenLib\LoutenLib.lua
