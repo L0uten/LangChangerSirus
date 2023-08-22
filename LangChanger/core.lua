@@ -3,7 +3,7 @@ local LoutenLib, LGCH = unpack(Engine)
 
 LoutenLib:InitAddon("LangChanger", "Language Changer", "1.1")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "18", "01", "00", "00")
+LGCH:SetRevision("2023", "08", "2", "00", "01", "00")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -70,9 +70,11 @@ LGCH.AddonReady:SetScript("OnUpdate", function()
     end
 end)
 
-LGCH.ZoneChanged:SetScript("OnEvent", function()
-    LGCH.GetDefaultLanguage()
-    LGCH.ChangeLang(LGCH.ActualLangList[LGCH.LangIndex] or LGCH.GetDefaultLanguage())
+LGCH.ZoneChanged:SetScript("OnEvent", function(s, e)
+    if (e == "ZONE_CHANGED_NEW_AREA") then
+        LGCH.GetDefaultLanguage()
+        LGCH.ChangeLang(LGCH.ActualLangList[LGCH.LangIndex] or LGCH.GetDefaultLanguage())
+    end
 end)
 
 LGCH.LangChangeList:SetScript("OnEvent", function (s, e)
@@ -139,7 +141,15 @@ function LGCH.LangLFGChangeFunc()
                                 return
                         end
                     end
-                    if (tostring(name) ~= "Поиск спутников(А)" and tostring(name) ~= "Поиск спутников(О)") then
+                    if (tostring(name) == "Поиск спутников" and LGCH.GetDefaultLanguage() == "арго скорпидов") then
+                        if (LGCH.LangLFGChange.ForceStop ~= "R") then
+                            LGCH.LangLFGChange.ForceStop = "R"
+                                if (ChatMenu.chatFrame.editBox.language == "арго скорпидов") then return end
+                                LGCH.ChangeLang("арго скорпидов", false)
+                                return
+                        end
+                    end
+                    if (tostring(name) ~= "Поиск спутников(А)" and tostring(name) ~= "Поиск спутников(О)" and tostring(name) ~= "Поиск спутников") then
                         LGCH.LangLFGChange.ForceStop = "none"
                         return
                     end
@@ -270,7 +280,10 @@ function LGCH.ChangeLang(lang, isForced, channelName)
         if (channelName == "Поиск спутников(А)") then
             LGCH.LangLFGChange.ForceStop = "A"
         end
-        if (channelName ~= "Поиск спутников(А)" and channelName ~= "Поиск спутников(О)") then
+        if (channelName == "Поиск спутников" and LGCH.GetDefaultLanguage() == "арго скорпидов") then
+            LGCH.LangLFGChange.ForceStop = "R"
+        end
+        if (channelName ~= "Поиск спутников(А)" and channelName ~= "Поиск спутников(О)" and channelName ~= "Поиск спутников") then
             LGCH.LangLFGChange.ForceStop = "none"
         end
     end
