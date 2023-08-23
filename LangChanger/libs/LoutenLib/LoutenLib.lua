@@ -1,12 +1,18 @@
 local AddOnName, Engine = ...
 Engine[1] = {}
 Engine[2] = {}
+Engine[3] = {}
+Engine[4] = {}
+Engine[5] = {}
+Engine[6] = {}
+Engine[7] = {}
+Engine[8] = {}
 _G[AddOnName] = Engine
 
 local dropdownlists = {}
 local streams = {}
 
-
+Engine[1].LibVersion = "1.1a"
 
 
 
@@ -453,13 +459,13 @@ Engine[1].CreateNewFrame = function(s, parent)
             self.DropDownList.Close()
             self.DropDownList.Elements[l] = Engine[1]:CreateNewFrame(self.DropDownList)
             if (self.DropDownList.SideToOpen == "up") then
-                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth(), self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders,
-                                                        "BOTTOM", self.DropDownList, "BOTTOM", 0,0,
+                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth()-2, self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders,
+                                                        "BOTTOM", self.DropDownList, "BOTTOM", 0,2,
                                                         red, green, blue, alpha,
                                                         true, false, nil)
             elseif (self.DropDownList.SideToOpen == "down") then
-                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth(), self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders,
-                                                        "TOP", self.DropDownList, "TOP", 0,0,
+                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth()-2, self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders,
+                                                        "TOP", self.DropDownList, "TOP", 0,-2,
                                                         red, green, blue, alpha,
                                                         true, false, nil)
             end
@@ -475,13 +481,13 @@ Engine[1].CreateNewFrame = function(s, parent)
             self.DropDownList.Close()
             self.DropDownList.Elements[l] = Engine[1]:CreateNewFrame(self.DropDownList)
             if (self.DropDownList.SideToOpen == "up") then
-                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth(), self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders+1,
-                                                        "BOTTOM", self.DropDownList, "BOTTOM", 0,0,
+                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth()-2, self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders+1,
+                                                        "BOTTOM", self.DropDownList, "BOTTOM", 0,2,
                                                         red, green, blue, alpha,
                                                         true, false, nil)
             elseif (self.DropDownList.SideToOpen == "down") then
-                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth(), self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders+1,
-                                                        "TOP", self.DropDownList, "TOP", 0,0,
+                self.DropDownList.Elements[l]:InitNewFrame(self.DropDownList:GetWidth()-2, self.DropDownList:GetHeight() / #self.DropDownList.Elements.DisplayOrders+1,
+                                                        "TOP", self.DropDownList, "TOP", 0,-2,
                                                         red, green, blue, alpha,
                                                         true, false, nil)
             end
@@ -581,18 +587,19 @@ Engine[1].CreateNewFrame = function(s, parent)
                                                 0,0,0,0,
                                                 false, false, nil)
         if (sideToOpen == "up") then
-            self.DropDownList:InitNewFrame2(self:GetWidth() * multiplyWidthDropDownList, self:GetHeight() * #arrayWithElementsText,
+            self.DropDownList:InitNewFrame2(self:GetWidth() * multiplyWidthDropDownList, self:GetHeight() * #arrayWithElementsText + 4,
                                             "BOTTOM", self.DropDownButton, "TOP", 0,0,
-                                            red, green, blue, alpha,
+                                            0,0,0, 1,
                                             true, false)
             self.DropDownButton.Arrow.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\moveup.tga")
         elseif (sideToOpen == "down") then
-            self.DropDownList:InitNewFrame2(self:GetWidth() * multiplyWidthDropDownList, self:GetHeight() * #arrayWithElementsText,
+            self.DropDownList:InitNewFrame2(self:GetWidth() * multiplyWidthDropDownList, self:GetHeight() * #arrayWithElementsText + 4,
                                             "TOP", self.DropDownButton, "BOTTOM", 0,0,
-                                            red, green, blue, alpha,
+                                            0,0,0, 1,
                                             true, false)
             self.DropDownButton.Arrow.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\movedown.tga")
         end
+        
         self.DropDownList:Hide()
 
 
@@ -603,13 +610,13 @@ Engine[1].CreateNewFrame = function(s, parent)
             self.DropDownList.Elements.DisplayOrders[i] = i
 
             if (self.DropDownList.SideToOpen == "up") then
-                self.DropDownList.Elements[i]:InitNewFrame2(self.DropDownList:GetWidth(), self.DropDownList:GetHeight() / #arrayWithElementsText,
-                                                        "BOTTOM", self.DropDownList, "BOTTOM", 0,0,
+                self.DropDownList.Elements[i]:InitNewFrame2(self.DropDownList:GetWidth()-2, self.DropDownList:GetHeight() / #arrayWithElementsText,
+                                                        "BOTTOM", self.DropDownList, "BOTTOM", 0,2,
                                                         red, green, blue, alpha,
                                                         true, false, nil)
             elseif (self.DropDownList.SideToOpen == "down") then
-                self.DropDownList.Elements[i]:InitNewFrame2(self.DropDownList:GetWidth(), self.DropDownList:GetHeight() / #arrayWithElementsText,
-                                                        "TOP", self.DropDownList, "TOP", 0,0,
+                self.DropDownList.Elements[i]:InitNewFrame2(self.DropDownList:GetWidth()-2, self.DropDownList:GetHeight() / #arrayWithElementsText,
+                                                        "TOP", self.DropDownList, "TOP", 0,-2,
                                                         red, green, blue, alpha,
                                                         true, false, nil)
             end
@@ -650,28 +657,30 @@ Engine[1].CreateNewFrame = function(s, parent)
     
         self.ScrollFrame = CreateFrame("ScrollFrame", nil, self)
         self.ScrollChild = CreateFrame("Frame")
-
-        self.ScrollBar = CreateFrame("Slider", nil, self.ScrollFrame, "UIPanelScrollBarTemplate")
+        self.ScrollBar = CreateFrame("Slider", nil, self.ScrollFrame, "MinimalScrollBarTemplate")
+        
         self.ScrollBar:SetPoint("RIGHT", self, "RIGHT", -5, 0)
         self.ScrollBar:SetSize(10, self:GetHeight() - 40)
         self.ScrollBar:SetMinMaxValues(0, 10)
         self.ScrollBar:SetValue(0)
         self.ScrollBar:SetValueStep(1)
         self.ScrollBar:SetOrientation('VERTICAL')
+        self.ScrollBar:SetFrameLevel(self.ScrollBar:GetFrameLevel()+20)
+
         self.ScrollFrame:SetScrollChild(self.ScrollChild)
 
         self.ScrollFrame:SetAllPoints(self)
     
         self.ScrollChild:SetWidth(self.ScrollFrame:GetWidth()-10)
         self.ScrollChild:SetHeight(self.ScrollFrame:GetHeight())
-    
+        
     
         self:SetScript("OnMouseWheel", function (s, delta)
             self.ScrollBar:SetValue(self.ScrollBar:GetValue() - delta * 20)
             self.ScrollBar:SetMinMaxValues(0, self.ScrollFrame:GetVerticalScrollRange())
         end)
-    
-        self.ScrollBar:SetScript("OnMouseDown", function (s, button)
+
+        self.ScrollBar:SetScript("OnMouseDown", function (s, mouseButtonClick)
             self.ScrollBar:SetMinMaxValues(0, self.ScrollFrame:GetVerticalScrollRange())
         end)
     end
@@ -794,6 +803,17 @@ Engine[1].FindingDiffInTwoArray = function(s, table1, table2)
     return t
 end
 
+Engine[1].RGBToWowColors = function(s, color)
+    local colorButton
+    if (color > 255) then
+        colorButton = 1
+    else
+        colorButton = color/255 - 0.1
+        if (colorButton < 0) then colorButton = 0 end
+    end
+    print(colorButton)
+    return colorButton
+end
 
 
 
@@ -1010,30 +1030,328 @@ Engine[1].InitAddon = function(s, fileName, name, version)
 
     --------------
     -- Settings --
-    -- Engine[2].SettingsWindow = Engine[1]:CreateNewFrame(UIParent)
-    -- Engine[2].SettingsWindow:InitNewFrame(800, 570,
-    --                                     "CENTER", nil, "CENTER", 0, 0,
-    --                                     0, 0, 0, .735,
-    --                                     true, true, nil)
+    Engine[2].SettingsWindow = Engine[1]:CreateNewFrame(UIParent)
+    Engine[2].SettingsWindow.Width = 800
+    Engine[2].SettingsWindow.Height = 570
+    Engine[2].SettingsWindow.IsFirstOpen = true
+    Engine[2].SettingsWindow:SetFrameStrata("HIGH")
+    Engine[2].SettingsWindow.WindowStylesInRGB =
+    {
+        ["red"] = {
+            red = 112, green = 4, blue = 4
+        },
+        ["green"] = {
+            red = 4, green = 112, blue = 39
+        },
+        ["blue"] = {
+            red = 26, green = 8, blue = 117
+        },
+        ["black"] = {
+            red = 13, green = 13, blue = 13
+        },
+        ["white"] = {
+            red = 230, green = 230, blue = 230
+        },
+        ["gold"] = {
+            red = 255, green = 215, blue = 1
+        }
+    }
+    Engine[2].SettingsWindow.WindowStyle = "red"
+    Engine[2].SettingsWindow.GetStyle = function()
+        return Engine[2].SettingsWindow.WindowStyle
+    end
+    Engine[2].SettingsWindow.AddStyle = function(s, styleName, red, green, blue)
+        if (Engine[2].SettingsWindow.WindowStylesInRGB[styleName]) then return end
+        Engine[2].SettingsWindow.WindowStylesInRGB[styleName] = {
+            red = red, green = green, blue = blue
+        }
+    end
+    Engine[2].SettingsWindow.ChangeStyle = function(s, style)
+        Engine[2].SettingsWindow.WindowStyle = style
+    end
+    Engine[2].SettingsWindow:InitNewFrame(Engine[2].SettingsWindow.Width, Engine[2].SettingsWindow.Height,
+                                        "CENTER", nil, "CENTER", 0, 0,
+                                        0, 0, 0, .735,
+                                        true, true)
+    Engine[2].SettingsWindow.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\settings_bg.blp")
 
-    -- Engine[2].SettingsWindow.Header = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow)
-    -- Engine[2].SettingsWindow.Header:InitNewFrame(Engine[2].SettingsWindow:GetWidth(), Engine[2].SettingsWindow:GetHeight() * 0.042,
-    --                                             "TOP", Engine[2].SettingsWindow, "TOP", 0, 0,
-    --                                             0,0,0,1,
-    --                                             true, false, nil)
-    -- Engine[2].SettingsWindow.Header.Title = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.Header)
-    -- Engine[2].SettingsWindow.Header.Title:SetTextToFrame("CENTER", Engine[2].SettingsWindow.Header, "CENTER", 0, -1, true, 12, Engine[2].Info.Name)
-    -- Engine[2].SettingsWindow.Header.CloseButton = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.Header)
-    -- Engine[2].SettingsWindow.Header.CloseButton:InitNewFrame(Engine[2].SettingsWindow.Header:GetHeight(), Engine[2].SettingsWindow.Header:GetHeight(),
-    --                                                         "RIGHT", Engine[2].SettingsWindow.Header, "RIGHT", 0, 0,
-    --                                                         .2, 0, 0, 1,
-    --                                                         true, false, nil)
-    -- Engine[2].SettingsWindow.Header.CloseButton:SetTextToFrame("CENTER", Engine[2].SettingsWindow.Header.CloseButton, "CENTER", 0, 1, true, 15, "x")
-    -- Engine[2].SettingsWindow.Header.CloseButton:InitNewButton(  .4, 0, 0, 1,
-    --                                                         .2,0,0,1,
-    --                                                         .25, 0, 0, 1,
-    --                                                         .4, 0, 0, 1,
-    --                                                         function()end, nil)
+    Engine[2].SettingsWindow.Header = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow)
+    Engine[2].SettingsWindow.Header:InitNewFrame2(Engine[2].SettingsWindow:GetWidth(), Engine[2].SettingsWindow:GetHeight() * 0.042,
+                                                "TOP", Engine[2].SettingsWindow, "TOP", 0, 0,
+                                                Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red,
+                                                Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green,
+                                                Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue,
+                                                1)
+    Engine[2].SettingsWindow.Header.Title = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.Header)
+    Engine[2].SettingsWindow.Header.Title:SetTextToFrame("CENTER", Engine[2].SettingsWindow.Header, "CENTER", 0, -1, true, 12, Engine[2].Info.Name)
+    if (Engine[2].SettingsWindow:GetStyle() == "white") then
+        Engine[2].SettingsWindow.Header.Title.Text:SetTextColor(0,0,0)
+    end
+    Engine[2].SettingsWindow.Header.CloseButton = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.Header)
+    Engine[2].SettingsWindow.Header.CloseButton:InitNewFrame(Engine[2].SettingsWindow.Header:GetHeight(), Engine[2].SettingsWindow.Header:GetHeight(),
+                                                            "RIGHT", Engine[2].SettingsWindow.Header, "RIGHT", 0, 0,
+                                                            0, 0, 0, 0,
+                                                            true)
+    Engine[2].SettingsWindow.Header.CloseButton:SetTextToFrame("CENTER", Engine[2].SettingsWindow.Header.CloseButton, "CENTER", 0, 1, true, 15, "x")
+    Engine[2].SettingsWindow.Header.CloseButton:InitNewButton2(0,0,0,0,
+                                                            function()
+                                                                -- Engine[2].SettingsWindow:Hide()
+                                                                Engine[2].SettingsWindow:Close()
+                                                            end)
+        -- menu bar
+    Engine[2].SettingsWindow.MenuBar = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow)
+    Engine[2].SettingsWindow.MenuBar:InitNewFrame(Engine[2].SettingsWindow:GetWidth()*0.25, Engine[2].SettingsWindow:GetHeight()-Engine[2].SettingsWindow.Header:GetHeight()-10,
+                                                    "LEFT", Engine[2].SettingsWindow, "LEFT", 10, -8,
+                                                    .035,.035,.035,1, true)
+    Engine[2].SettingsWindow.MenuBar:SetFrameLevel(Engine[2].SettingsWindow.MenuBar:GetFrameLevel()-1)
+    -- Engine[2].SettingsWindow.MenuBar.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\settings_bg.blp")
+    -- Engine[2].SettingsWindow.MenuBar.Texture:SetVertexColor(.1,.1,.1,1)
+
+        -- main panel
+    Engine[2].SettingsWindow.MainPanel = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow)
+    Engine[2].SettingsWindow.MainPanel:InitNewFrame(Engine[2].SettingsWindow:GetWidth()*0.711, Engine[2].SettingsWindow:GetHeight()-Engine[2].SettingsWindow.Header:GetHeight()-10,
+                                                    "RIGHT", Engine[2].SettingsWindow, "RIGHT", -10, -8,
+                                                    .035,.035,.035,1, true)
+    Engine[2].SettingsWindow.MainPanel:SetFrameLevel(Engine[2].SettingsWindow.MainPanel:GetFrameLevel()-1)
+    Engine[2].SettingsWindow.MainPanel:Hide()
+    -- Engine[2].SettingsWindow.MainPanel.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\settings_bg.blp")
+    -- Engine[2].SettingsWindow.MainPanel.Texture:SetVertexColor(.1,.1,.1,1)
+
+
+        -- functions
+    Engine[2].SettingsWindow.MenuBar.ButtonsWidth = Engine[2].SettingsWindow.MenuBar:GetWidth()
+    Engine[2].SettingsWindow.MenuBar.ButtonsHeight = 33
+    Engine[2].SettingsWindow.MenuBar.ButtonFontHeight = 12
+    Engine[2].SettingsWindow.MenuBar.AddNewBarButton = function(s, buttonText, addScroll)
+        Engine[2].SettingsWindow.MenuBar.Buttons = Engine[2].SettingsWindow.MenuBar.Buttons or {}
+        local i = #Engine[2].SettingsWindow.MenuBar.Buttons + 1
+
+        Engine[2].SettingsWindow.MenuBar.Buttons[i] = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.MenuBar)
+        if (i == 1) then
+            Engine[2].SettingsWindow.MenuBar.Buttons[i]:InitNewFrame2(Engine[2].SettingsWindow.MenuBar.ButtonsWidth, Engine[2].SettingsWindow.MenuBar.ButtonsHeight,
+                                                                        "TOP", Engine[2].SettingsWindow.MenuBar, "TOP", 0, -10,
+                                                                        Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red,
+                                                                        Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green,
+                                                                        Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue,
+                                                                        1, true)
+        else
+            Engine[2].SettingsWindow.MenuBar.Buttons[i]:InitNewFrame2(Engine[2].SettingsWindow.MenuBar:GetWidth(), 33,
+                                                                        "TOP", Engine[2].SettingsWindow.MenuBar.Buttons[i-1], "BOTTOM", 0, -5,
+                                                                        Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red,
+                                                                        Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green,
+                                                                        Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue,
+                                                                        1, true)
+        end
+        Engine[2].SettingsWindow.MenuBar.Buttons[i]:InitNewButton2(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red,
+                                                                    Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green,
+                                                                    Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue,
+                                                                    1,
+                                                                    function()
+                                                                        for i = 1, #Engine[2].SettingsWindow.MainPanel.Windows do
+                                                                            Engine[2].SettingsWindow.MainPanel.Windows[i]:Hide()
+                                                                        end
+                                                                        Engine[2].SettingsWindow.MainPanel:Show()
+                                                                        Engine[2].SettingsWindow.MainPanel.Windows[i]:Show()
+                                                                    end)
+        Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetTextToFrame("CENTER", Engine[2].SettingsWindow.MenuBar.Buttons[i], "CENTER", 0, 1, true, Engine[2].SettingsWindow.MenuBar.ButtonFontHeight, buttonText)
+        if (Engine[2].SettingsWindow:GetStyle() == "white") then
+            Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:SetTextColor(0,0,0)
+        end
+
+
+        Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetScript("OnEnter", function()
+            local function setupColor(color)
+                local colorButton, colorOnEnter, colorOnLeave
+                if (color > 255) then
+                    colorButton = 1
+                else
+                    colorButton = color/255 - 0.1
+                    if (colorButton < 0) then colorButton = 0 end
+                end
+    
+                colorOnEnter = colorButton + 0.1
+                if (colorOnEnter > 1) then colorOnEnter = 1 end
+    
+                return colorOnEnter
+            end
+
+            if (Engine[2].SettingsWindow.MenuBar.Buttons[i]:IsTexture()) then
+                Engine[2].SettingsWindow.MenuBar.Buttons[i].Texture:SetTexture(
+                    setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red), 
+                    setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green), 
+                    setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue), 1)
+            else
+                Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetBackdropColor(
+                    setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red), 
+                    setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green), 
+                    setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue), 1)
+            end
+
+            local fontName = Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:GetFont()
+            local fontHeight = Engine[2].SettingsWindow.MenuBar.ButtonFontHeight
+            local w, h = Engine[2].SettingsWindow.MenuBar.ButtonsWidth+15, Engine[2].SettingsWindow.MenuBar.ButtonsHeight+15
+            local animSpeed = 0
+            local anim = CreateFrame("Frame")
+            anim:SetScript("OnUpdate", function()
+                if (GetFramerate() < 10) then
+                    animSpeed = 20
+                elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
+                    animSpeed = 40
+                elseif (GetFramerate() >= 30 and GetFramerate() <= 60) then
+                    animSpeed = 60
+                else
+                    animSpeed = 100
+                end
+                Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetWidth(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetWidth() + (w / animSpeed))
+                Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetHeight(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() + (h / animSpeed)*6.60)
+                if (Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() >= h) then
+                    anim:SetScript("OnUpdate", nil)
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetSize(w, h)
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:SetFont(fontName, fontHeight+1)
+                end
+            end)
+        end)
+        Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetScript("OnLeave", function()
+            local function setupColor(color)
+                local colorButton, colorOnLeave
+                if (color > 255) then
+                    colorButton = 1
+                else
+                    colorButton = color/255 - 0.1
+                    if (colorButton < 0) then colorButton = 0 end
+                end
+
+                colorOnLeave = colorButton
+    
+                return colorOnLeave
+            end
+
+            if (not Engine[2].SettingsWindow.MenuBar.Buttons[i].IsPressed) then
+                if (Engine[2].SettingsWindow.MenuBar.Buttons[i]:IsTexture()) then
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i].Texture:SetTexture(
+                        setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red), 
+                        setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green), 
+                        setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue), 1)
+                else
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetBackdropColor(
+                        setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].red), 
+                        setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].green), 
+                        setupColor(Engine[2].SettingsWindow.WindowStylesInRGB[Engine[2].SettingsWindow.WindowStyle].blue), 1)
+                end
+            end
+
+            local fontName = Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:GetFont()
+            local fontHeight = Engine[2].SettingsWindow.MenuBar.ButtonFontHeight
+            local w, h = Engine[2].SettingsWindow.MenuBar.ButtonsWidth, Engine[2].SettingsWindow.MenuBar.ButtonsHeight
+            local animSpeed = 0
+            local anim = CreateFrame("Frame")
+            anim:SetScript("OnUpdate", function()
+                if (GetFramerate() < 10) then
+                    animSpeed = 20
+                elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
+                    animSpeed = 40
+                elseif (GetFramerate() >= 30 and GetFramerate() <= 60) then
+                    animSpeed = 60
+                else
+                    animSpeed = 100
+                end
+                Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetWidth(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetWidth() - (w / animSpeed))
+                Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetHeight(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() - (h / animSpeed)*6.66)
+                if (Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() <= h) then
+                    anim:SetScript("OnUpdate", nil)
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetSize(w, h)
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:SetFont(fontName, fontHeight)
+                end
+            end)
+        end)
+        Engine[2].SettingsWindow.MainPanel:AddNewPanelWindow(addScroll)
+    end
+    Engine[2].SettingsWindow.MainPanel.AddNewPanelWindow = function(s, addScroll)
+        Engine[2].SettingsWindow.MainPanel.Windows = Engine[2].SettingsWindow.MainPanel.Windows or {}
+        local i = #Engine[2].SettingsWindow.MainPanel.Windows + 1
+
+        Engine[2].SettingsWindow.MainPanel.Windows[i] = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.MainPanel)
+        Engine[2].SettingsWindow.MainPanel.Windows[i]:InitNewFrame(Engine[2].SettingsWindow.MainPanel:GetWidth()-5, Engine[2].SettingsWindow.MainPanel:GetHeight()-5,
+                                                    "CENTER", Engine[2].SettingsWindow.MainPanel, "CENTER", 0,0,
+                                                    0,0,0,0, true)
+        if (addScroll) then Engine[2].SettingsWindow.MainPanel.Windows[i]:AddScrollToFrame() end
+        Engine[2].SettingsWindow.MainPanel.Windows[i]:Hide()
+    end
+    Engine[2].SettingsWindow.GetIndexByText = function(s, text)
+        if (not Engine[2].SettingsWindow.MenuBar.Buttons) then return end
+        for i = 1, #Engine[2].SettingsWindow.MenuBar.Buttons do
+            if (Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:GetText() == text) then
+                return i
+            end
+        end
+    end
+    Engine[2].SettingsWindow.Close = function()
+        Engine[2].SettingsWindow.Texture:SetVertexColor(0,0,0,.9)
+        local children = {Engine[2].SettingsWindow:GetChildren()}
+        for _, child in ipairs(children) do
+            child:Hide()
+        end
+
+        local w, h = Engine[2].SettingsWindow:GetWidth(), Engine[2].SettingsWindow:GetHeight()
+        local animSpeed = 0
+        local anim = CreateFrame("Frame")
+        anim:SetScript("OnUpdate", function()
+            if (GetFramerate() < 10) then
+                animSpeed = 4
+            elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
+                animSpeed = 6
+            elseif (GetFramerate() >= 30 and GetFramerate() <= 60) then
+                animSpeed = 8
+            else
+                animSpeed = 20
+            end
+            Engine[2].SettingsWindow:SetWidth(Engine[2].SettingsWindow:GetWidth() - (w / animSpeed))
+            Engine[2].SettingsWindow:SetHeight(Engine[2].SettingsWindow:GetHeight() - (h / animSpeed))
+            if (Engine[2].SettingsWindow:GetHeight() <= 0) then
+                anim:SetScript("OnUpdate", nil)
+                Engine[2].SettingsWindow:Hide()
+            end
+        end)
+    end
+    Engine[2].SettingsWindow.Open = function()
+        local children = {Engine[2].SettingsWindow:GetChildren()}
+        for _, child in ipairs(children) do
+            child:Hide()
+        end
+        Engine[2].SettingsWindow:SetSize(0,0)
+        Engine[2].SettingsWindow:Show()
+        local w, h = Engine[2].SettingsWindow.Width, Engine[2].SettingsWindow.Height
+        local animSpeed = 0
+        local anim = CreateFrame("Frame")
+        anim:SetScript("OnUpdate", function()
+            if (GetFramerate() < 10) then
+                animSpeed = 4
+            elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
+                animSpeed = 6
+            elseif (GetFramerate() >= 30 and GetFramerate() <= 60) then
+                animSpeed = 8
+            else
+                animSpeed = 20
+            end
+            Engine[2].SettingsWindow:SetWidth(Engine[2].SettingsWindow:GetWidth() + (w / animSpeed))
+            Engine[2].SettingsWindow:SetHeight(Engine[2].SettingsWindow:GetHeight() + (h / animSpeed))
+            if (Engine[2].SettingsWindow:GetHeight() >= h) then
+                anim:SetScript("OnUpdate", nil)
+                Engine[2].SettingsWindow:SetSize(w,h)
+                Engine[2].SettingsWindow:Show()
+                local children = {Engine[2].SettingsWindow:GetChildren()}
+                for _, child in ipairs(children) do
+                    child:Show()
+                    if (Engine[2].SettingsWindow.IsFirstOpen) then
+                        Engine[2].SettingsWindow.MainPanel:Hide()
+                        Engine[2].SettingsWindow.IsFirstOpen = false
+                    end
+                end
+                Engine[2].SettingsWindow.Texture:SetVertexColor(0,0,0,.8)
+            end
+        end)
+    end
+    Engine[2].SettingsWindow:Hide()
     --------------
     -- Settings --
 

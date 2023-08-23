@@ -1,24 +1,22 @@
 local AddOnName, Engine = ...
-local LoutenLib, LGCH = unpack(Engine)
+LoutenLib, LGCH = unpack(Engine)
 
-LoutenLib:InitAddon("LangChanger", "Language Changer", "1.1")
+LoutenLib:InitAddon("LangChanger", "Language Changer", "1.2")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "2", "00", "01", "00")
+LGCH:SetRevision("2023", "08", "23", "00", "01", "00")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
-    LGCH:PrintMsg("/lgch show | hide - показать или скрыть окно.")
-    LGCH:PrintMsg("/lgch reset - сбросить позицию окна в центр экрана.")
     LGCH:PrintMsg("Нажмите ПКМ чтобы заблокировать или разблокировать окно.")
 end)
 
 SlashCmdList.LGCH = function(msg, editBox)
     msg = strlower(msg)
     if (#msg == 0) then
-        if (LGCH.Settings:IsShown()) then
-            LGCH.Settings:Hide()
+        if (LGCH.SettingsWindow:IsShown()) then
+            LGCH.SettingsWindow:Close()
         else
-            LGCH.Settings:Show()
+            LGCH.SettingsWindow:Open()
         end
     elseif (msg == "hide" or msg == "show") then
         if (LGCH.LangFrame:IsShown()) then
@@ -26,10 +24,7 @@ SlashCmdList.LGCH = function(msg, editBox)
         else
             LGCH.LangFrame:Show()
         end
-    elseif (msg == "reset") then
-        LGCH.LangFrame:ClearAllPoints()
-        LGCH.LangFrame:SetPoint("CENTER", nil, "CENTER", 0,0)
-        LGCH_DB.Profiles[UnitName("player")].FramePositions = {LGCH.LangFrame:GetPoint()}
+        LGCH_DB.Profiles[UnitName("player")].IsShown = LGCH.LangFrame:IsShown()
     end
 end
 
@@ -40,7 +35,6 @@ LGCH.LangList = {}
 LGCH.ActualLangList = nil
 
 LGCH.LangFrame = nil
-LGCH.Settings = nil
 
 LGCH.LangIndex = nil
 LGCH.IsRenegade = nil
@@ -194,7 +188,12 @@ function LGCH.InitActualLangsList()
 end
 
 function LGCH.CreateDropDown(standartLang)
+    LGCH_DB.Profiles[UnitName("player")].OpenTo = LGCH_DB.Profiles[UnitName("player")].OpenTo or "down"
+    
     LGCH.LangFrame = LoutenLib:CreateNewFrame(ChatFrame1EditBox)
+    if (not LGCH_DB.Profiles[UnitName("player")].IsShown) then
+        LGCH.LangFrame:Hide()
+    end
     LGCH.LangFrame.UnlockButton = LoutenLib:CreateNewFrame(LGCH.LangFrame)
     LGCH.LangFrame.UnlockButton:Hide()
     local langFrameWidth = 120
@@ -217,30 +216,29 @@ function LGCH.CreateDropDown(standartLang)
                                 end)
     end
 
-    LGCH.LangFrame:InitNewDropDownList(0,0,0,1, "down", "Button", standartLang, LGCH.ActualLangList, nil, nil,
+    LGCH.LangFrame:InitNewDropDownList(0,0,0,1, LGCH_DB.Profiles[UnitName("player")].OpenTo, "Button", standartLang, LGCH.ActualLangList, nil, nil,
                                                     function()
                                                         if (LGCH.LangFrame.UnlockButton:IsShown()) then
                                                             LGCH.LangFrame.UnlockButton:Hide()
                                                             LGCH.LangFrame:SetWidth(120)
-                                                            LGCH_DB.Profiles[UnitName("player")].UnluckButtonIsShown = false
+                                                            LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown = false
                                                             LGCH.LangFrame:SetMovable(false)
                                                         else
                                                             LGCH.LangFrame.UnlockButton:Show()
                                                             LGCH.LangFrame:SetWidth(140)
-                                                            LGCH_DB.Profiles[UnitName("player")].UnluckButtonIsShown = true
+                                                            LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown = true
                                                             LGCH.LangFrame:SetMovable(true)
                                                         end
                                                     end)
-    if (LGCH_DB.Profiles[UnitName("player")].UnluckButtonIsShown ~= nil) then
-        if (LGCH_DB.Profiles[UnitName("player")].UnluckButtonIsShown) then
-            LGCH.LangFrame.UnlockButton:Show()
-            langFrameWidth = 140
-        else
-            LGCH.LangFrame.UnlockButton:Hide()
-            langFrameWidth = 120
-        end
-        LGCH.LangFrame:SetWidth(langFrameWidth)
+    
+    if (LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown) then
+        LGCH.LangFrame.UnlockButton:Show()
+        langFrameWidth = 140
+    else
+        LGCH.LangFrame.UnlockButton:Hide()
+        langFrameWidth = 120
     end
+    LGCH.LangFrame:SetWidth(langFrameWidth)
     LGCH.LangFrame.DropDownButton:SetWidth(LGCH.LangFrame:GetWidth()-(langFrameWidth-120))
     LGCH.LangFrame:EnableMouseWheel(1)
     LGCH.LangFrame:SetScript("OnMouseWheel", function(s,d)
@@ -256,7 +254,7 @@ function LGCH.CreateDropDown(standartLang)
     LGCH.LangFrame.UnlockButton:InitNewFrame(15, 15,
                                             "RIGHT", LGCH.LangFrame, "RIGHT", -2.5,0,
                                             0,1,0,1, false, false, nil)
-    LGCH.LangFrame.UnlockButton.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\drag.blp")
+    LGCH.LangFrame.UnlockButton.Texture:SetTexture("Interface\\AddOns\\"..LGCH.Info.FileName.."\\textures\\drag.blp")
 end
 
 function LGCH.SetLangs()
@@ -293,101 +291,6 @@ function LGCH.ChangeLang(lang, isForced, channelName)
     LGCH.Lang = lang
     LGCH.LangFrame.DropDownList:Close()
 end
-
-function LGCH.InitNewSettings()
-    LGCH.Settings = LoutenLib:CreateNewFrame(UIParent)
-    LGCH.Settings:Hide()
-    LGCH_DB.Profiles[UnitName("player")].ActiveLangs = LGCH_DB.Profiles[UnitName("player")].ActiveLangs or {}
-    LGCH.Settings:InitNewFrame(170, 50,
-                                "CENTER", nil, "CENTER", 0,0,
-                                0,0,0,.4, true, true, nil)
-    LGCH.Settings:TextureToBackdrop(true, 2, 3, .95, .82, 0, 1, 0,0,0,1)
-    LGCH.Settings:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-        edgeFile = "Interface\\Buttons\\WHITE8x8",
-        edgeSize = 1
-    });
-    LGCH.Settings:SetBackdropColor(0,0,0,1);
-    LGCH.Settings:SetBackdropBorderColor(.95, .82, 0, .7);
-
-    LGCH.Settings.CloseButton = LoutenLib:CreateNewFrame(LGCH.Settings)
-    LGCH.Settings.CloseButton:InitNewFrame2(18, 18,
-                                            "TOPRIGHT", LGCH.Settings, "TOPRIGHT", 0,0,
-                                            230, 26, 23, 1, true, false, nil)
-    LGCH.Settings.CloseButton:InitNewButton2(230, 26, 23, 1,
-                                            nil, function()
-                                                LGCH.Settings:Hide()
-                                            end)
-    LGCH.Settings.CloseButton:SetTextToFrame("CENTER", LGCH.Settings.CloseButton, "CENTER", -1,3, true, 15, "x")
-
-    LGCH_DB.Profiles[UnitName("player")].OpenTo = LGCH_DB.Profiles[UnitName("player")].OpenTo or "down"
-    LGCH.Settings.OpenTo = LoutenLib:CreateNewFrame(LGCH.Settings)
-    LGCH.Settings.OpenTo:InitNewFrame(120, 20,
-                                    "TOP", LGCH.Settings, "TOP", 0, -20,
-                                    0,0,0,1, true, false, nil)
-    LGCH.Settings.OpenTo:InitNewDropDownList(196, 113, 4,1, LGCH_DB.Profiles[UnitName("player")].OpenTo, "Button",
-                                            "Открывать в:",
-                                            {"Вверх", "Вниз"},
-                                            {function()
-                                                LGCH.LangFrame.DropDownList:ChangeSideToOpen("up")
-                                                LGCH.Settings.OpenTo.DropDownList:Close()
-                                            end,
-                                            function()
-                                                LGCH.LangFrame.DropDownList:ChangeSideToOpen("down")
-                                                LGCH.Settings.OpenTo.DropDownList:Close()
-                                            end})
-    for i = 1, #LGCH.LangList do
-        if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == nil) then
-            LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] = true
-        end
-    end
-    LGCH.Settings.LangsCB = {}
-    for i = 1, 18 do
-        LGCH.Settings.LangsCB[i] = LoutenLib:CreateNewFrame(LGCH.Settings)
-        LGCH.Settings.LangsCB[i]:InitNewFrame(LGCH.Settings:GetWidth(), 30,
-                                            "TOP", LGCH.Settings.OpenTo, "TOP", 10, -(30*i),
-                                            0,0,0,0, true, false, nil)
-                                            
-        LGCH.Settings.LangsCB[i]:InitNewCheckButton(23, false, "", true, 11, function()end)
-        LGCH.Settings.LangsCB[i].CheckButton:SetBackdrop({
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = 15,
-        })
-        LGCH.Settings.LangsCB[i].CheckButton:SetBackdropBorderColor(1,1,1,.1)
-        LGCH.Settings.LangsCB[i]:Hide()
-    end
-end
-
-function LGCH.RefreshSettings()
-    for i = 1, #LGCH.Settings.LangsCB do
-        LGCH.Settings.LangsCB[i]:Hide()
-    end
-
-    for i = 1, #LGCH.LangList do
-        LGCH.Settings.LangsCB[i]:Show()
-        LGCH.Settings.LangsCB[i].Text:SetText(LGCH.LangList[i])
-        LGCH.Settings.LangsCB[i].CheckButton:SetChecked(LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]])
-        LGCH.Settings.LangsCB[i].CheckButton:SetScript("OnClick", function()
-            LGCH.Settings:EnableMouse(false)
-            LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] = not LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]]
-            LGCH.InitActualLangsList()
-            if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == false) then
-                LGCH.LangFrame.DropDownList:RemoveElementByText(LGCH.LangList[i])
-            else
-                LGCH.LangFrame.DropDownList:AddElementByOrder(LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.LangList[i]), LGCH.LangList[i])
-            end
-            LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.GetDefaultLanguage()) or 1
-            LGCH.SetLangs()
-            LGCH.Settings:EnableMouse(true)
-        end)
-    end
-
-    LGCH.Settings:SetHeight(LGCH.Settings.OpenTo:GetHeight()+20+(30*(#LGCH.LangList+1)))
-end
-
-
-
-
 
 
 
