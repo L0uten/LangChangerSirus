@@ -1,9 +1,9 @@
 local AddOnName, Engine = ...
 LoutenLib, LGCH = unpack(Engine)
 
-LoutenLib:InitAddon("LangChanger", "Language Changer", "1.2")
+LoutenLib:InitAddon("LangChanger", "Language Changer", "1.3")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "23", "00", "01", "00")
+LGCH:SetRevision("2023", "08", "31", "01", "00", "00")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -40,16 +40,12 @@ LGCH.LangIndex = nil
 LGCH.IsRenegade = nil
 LGCH.Lang = nil
 
-LGCH.LangLFGChange = CreateFrame("Frame")
-LGCH.AddonReady = CreateFrame("Frame")
-LGCH.ZoneChanged = CreateFrame("Frame")
-LGCH.LangChangeList = CreateFrame("Frame")
-LGCH.LangLFGChange.ForceStop = "none"
+LGCH.Events = CreateFrame("Frame")
+LGCH.ForceStop = "none"
 
-
-LGCH.AddonReady:SetScript("OnUpdate", function()
+LGCH.Events:SetScript("OnUpdate", function ()
     if (GetNumLanguages()) then
-        LGCH.AddonReady:SetScript("OnUpdate", nil)
+        LGCH.Events:SetScript("OnUpdate", nil)
         LGCH.InitLangs()
         LGCH.InitNewSettings()
         LGCH.InitActualLangsList()
@@ -57,21 +53,18 @@ LGCH.AddonReady:SetScript("OnUpdate", function()
         LGCH.CreateDropDown(LGCH.GetDefaultLanguage())
         LGCH.SetLangs()
         LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.GetDefaultLanguage()) or 1
-        LGCH.LangLFGChangeFunc()
         LGCH.Lang = LGCH.ActualLangList[LGCH.LangIndex] or LGCH.GetDefaultLanguage()
-        LGCH.LangChangeList:RegisterEvent("LANGUAGE_LIST_CHANGED")
-        LGCH.ZoneChanged:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+        LGCH.Events:RegisterEvent("LANGUAGE_LIST_CHANGED")
+        LGCH.Events:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     end
 end)
 
-LGCH.ZoneChanged:SetScript("OnEvent", function(s, e)
+LGCH.Events:SetScript("OnEvent", function (s, e)
     if (e == "ZONE_CHANGED_NEW_AREA") then
         LGCH.GetDefaultLanguage()
         LGCH.ChangeLang(LGCH.ActualLangList[LGCH.LangIndex] or LGCH.GetDefaultLanguage())
     end
-end)
 
-LGCH.LangChangeList:SetScript("OnEvent", function (s, e)
     if (e == "LANGUAGE_LIST_CHANGED") then
         local tempLangList = {}
         for i = 1, GetNumLanguages() do
@@ -113,46 +106,53 @@ LGCH.LangChangeList:SetScript("OnEvent", function (s, e)
     end
 end)
 
-function LGCH.LangLFGChangeFunc()
+local _SendChatMessage = SendChatMessage
+function SendChatMessage(...)
+    local msg, chatType, language, channel = ...
     if (LGCH.IsRenegade) then
-        LGCH.LangLFGChange:HookScript("OnUpdate", function ()
-            if (ChatFrame1EditBox:IsShown()) then
-                if (ChatFrame1EditBox:GetAttribute("chatType") == "CHANNEL") then
-                    local id, name = GetChannelName(tonumber(ChatFrame1EditBox:GetAttribute("channelTarget")))
-                    if (tostring(name) == "Поиск спутников(О)") then
-                        if (LGCH.LangLFGChange.ForceStop ~= "H") then
-                            LGCH.LangLFGChange.ForceStop = "H"
-                                if (ChatMenu.chatFrame.editBox.language == "орочий") then return end
-                                LGCH.ChangeLang("орочий", false)
-                                return
+        if (chatType == "CHANNEL") then
+            local _, name = GetChannelName(tonumber(channel))
+            if (tostring(name) == "Поиск спутников(О)") then
+                if (tostring(name) == "Поиск спутников(О)") then
+                    if (LGCH.ForceStop ~= "H") then
+                        LGCH.ForceStop = "H"
+                        if (LGCH.Lang ~= "орочий") then
+                            LGCH.ChangeLang("орочий", false)
                         end
                     end
-                    if (tostring(name) == "Поиск спутников(А)") then
-                        if (LGCH.LangLFGChange.ForceStop ~= "A") then
-                            LGCH.LangLFGChange.ForceStop = "A"
-                                if (ChatMenu.chatFrame.editBox.language == "всеобщий") then return end
-                                LGCH.ChangeLang("всеобщий", false)
-                                return
+                end
+            elseif (tostring(name) == "Поиск спутников(А)") then
+                if (LGCH.ForceStop ~= "A") then
+                    LGCH.ForceStop = "A"
+                        if (LGCH.Lang ~= "всеобщий") then
+                            LGCH.ChangeLang("всеобщий", false)
                         end
-                    end
-                    if (tostring(name) == "Поиск спутников" and LGCH.GetDefaultLanguage() == "арго скорпидов") then
-                        if (LGCH.LangLFGChange.ForceStop ~= "R") then
-                            LGCH.LangLFGChange.ForceStop = "R"
-                                if (ChatMenu.chatFrame.editBox.language == "арго скорпидов") then return end
-                                LGCH.ChangeLang("арго скорпидов", false)
-                                return
+                end
+            elseif (tostring(name) == "Поиск спутников" and LGCH.GetDefaultLanguage() == "арго скорпидов") then
+                if (LGCH.ForceStop ~= "R") then
+                    LGCH.ForceStop = "R"
+                        if (LGCH.Lang ~= "арго скорпидов") then
+                            LGCH.ChangeLang("арго скорпидов", false)
                         end
-                    end
-                    if (tostring(name) ~= "Поиск спутников(А)" and tostring(name) ~= "Поиск спутников(О)" and tostring(name) ~= "Поиск спутников") then
-                        LGCH.LangLFGChange.ForceStop = "none"
-                        return
-                    end
-                else
-                    LGCH.LangLFGChange.ForceStop = "none"
+                end
+            elseif (tostring(name) ~= "Поиск спутников(А)" and tostring(name) ~= "Поиск спутников(О)" and tostring(name) ~= "Поиск спутников") then
+                LGCH.ForceStop = "none"
+            end
+        end
+        if (chatType == "RAID" or "RAID_WARNING" and IsInRaid()) then
+            for i = 1, GetNumRaidMembers() do
+                if (UnitDebuff("raid"..i, "Орда")) then
+                    LGCH.ChangeLang("орочий", false)
+                    break
+                end
+                if (UnitDebuff("raid"..i, "Альянс")) then
+                    LGCH.ChangeLang("всеобщий", false)
+                    break
                 end
             end
-        end)
+        end
     end
+    _SendChatMessage(msg, chatType, LGCH.Lang, channel)
 end
 
 function LGCH.GetDefaultLanguage()
@@ -190,10 +190,8 @@ end
 function LGCH.CreateDropDown(standartLang)
     LGCH_DB.Profiles[UnitName("player")].OpenTo = LGCH_DB.Profiles[UnitName("player")].OpenTo or "down"
     
-    LGCH.LangFrame = LoutenLib:CreateNewFrame(ChatFrame1EditBox)
-    if (not LGCH_DB.Profiles[UnitName("player")].IsShown) then
-        LGCH.LangFrame:Hide()
-    end
+    LGCH.LangFrame = LoutenLib:CreateNewFrame(UIParent)
+    LGCH.LangFrame:Hide()
     LGCH.LangFrame.UnlockButton = LoutenLib:CreateNewFrame(LGCH.LangFrame)
     LGCH.LangFrame.UnlockButton:Hide()
     local langFrameWidth = 120
@@ -210,7 +208,7 @@ function LGCH.CreateDropDown(standartLang)
                                 end)
     else
         LGCH.LangFrame:InitNewFrame(langFrameWidth, 20,
-                                "LEFT", ChatFrame1EditBox, "LEFT", 2, -(ChatFrame1EditBox:GetHeight()-5),
+                                "CENTER", nil, "CENTER", 0, 0,
                                 0,0,0,.735, true, true, function()
                                     LGCH_DB.Profiles[UnitName("player")].FramePositions = {LGCH.LangFrame:GetPoint()}
                                 end)
@@ -255,6 +253,27 @@ function LGCH.CreateDropDown(standartLang)
                                             "RIGHT", LGCH.LangFrame, "RIGHT", -2.5,0,
                                             0,1,0,1, false, false, nil)
     LGCH.LangFrame.UnlockButton.Texture:SetTexture("Interface\\AddOns\\"..LGCH.Info.FileName.."\\textures\\drag.blp")
+
+    if (LGCH_DB.Profiles[UnitName("player")].IsFirstStart == nil) then
+        LGCH_DB.Profiles[UnitName("player")].IsFirstStart = true
+    end
+    for i = 1,10 do
+        local frame = _G["ChatFrame"..i.."EditBox"]
+        frame:SetScript("OnShow", function()
+            if (LGCH_DB.Profiles[UnitName("player")].IsFirstStart) then
+                LGCH_DB.Profiles[UnitName("player")].IsFirstStart = false
+                LGCH:Notify("Ваше окно с языками находится по середине экрана, вы можете перемещать его куда вам удобно нажав ПКМ на него.")
+            end
+
+            if (LGCH_DB.Profiles[UnitName("player")].IsShown) then
+                LGCH.LangFrame:Show()
+            end
+        end)
+        frame:SetScript("OnHide", function()
+            LGCH.LangFrame:Hide()
+        end)
+    end
+    
 end
 
 function LGCH.SetLangs()
@@ -273,16 +292,16 @@ end
 function LGCH.ChangeLang(lang, isForced, channelName)
     if (isForced) then
         if (channelName == "Поиск спутников(О)") then
-            LGCH.LangLFGChange.ForceStop = "H"
+            LGCH.ForceStop = "H"
         end
         if (channelName == "Поиск спутников(А)") then
-            LGCH.LangLFGChange.ForceStop = "A"
+            LGCH.ForceStop = "A"
         end
         if (channelName == "Поиск спутников" and LGCH.GetDefaultLanguage() == "арго скорпидов") then
-            LGCH.LangLFGChange.ForceStop = "R"
+            LGCH.ForceStop = "R"
         end
         if (channelName ~= "Поиск спутников(А)" and channelName ~= "Поиск спутников(О)" and channelName ~= "Поиск спутников") then
-            LGCH.LangLFGChange.ForceStop = "none"
+            LGCH.ForceStop = "none"
         end
     end
     LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, lang)

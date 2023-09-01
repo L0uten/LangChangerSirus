@@ -8,10 +8,10 @@ function LGCH.InitNewSettings()
     if (LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown == nil) then
         LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown = false
     end
+    LGCH_DB.Profiles[UnitName("player")].ActiveLangs = LGCH_DB.Profiles[UnitName("player")].ActiveLangs or {}
 
     LGCH.SettingsWindow.MenuBar:AddNewBarButton("Настройка окна")
     LGCH.SettingsWindow.MenuBar:AddNewBarButton("Управление языками", true)
-    LGCH_DB.Profiles[UnitName("player")].ActiveLangs = LGCH_DB.Profiles[UnitName("player")].ActiveLangs or {}
 
     local wi1 = LGCH.SettingsWindow:GetIndexByText("Настройка окна")
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1 = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
