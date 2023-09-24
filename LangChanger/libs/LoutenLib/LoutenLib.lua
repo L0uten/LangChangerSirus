@@ -12,7 +12,7 @@ _G[AddOnName] = Engine
 local dropdownlists = {}
 local streams = {}
 
-Engine[1].LibVersion = "1.1a"
+Engine[1].LibVersion = "1.1b"
 
 
 
@@ -356,12 +356,11 @@ Engine[1].CreateNewFrame = function(s, parent)
                     self.DropDownList.Elements[i]:EnableMouse(false)
                     self.DropDownList.Elements[i]:SetAlpha(0)
                 end
-    
-                local openAnimF = CreateFrame("Frame")
+
                 local animSpeed
                 local alpha = 0
                 local indexEl = 1
-                openAnimF:SetScript("OnUpdate", function()
+                self:SetScript("OnUpdate", function()
                     self.DropDownList.Elements[self.DropDownList.Elements.DisplayOrders[indexEl]]:SetAlpha(alpha)
                     if (GetFramerate() < 30) then
                         animSpeed = 3
@@ -378,7 +377,7 @@ Engine[1].CreateNewFrame = function(s, parent)
                         alpha = 0
                         indexEl = indexEl + 1
                         if (indexEl > #self.DropDownList.Elements.DisplayOrders) then
-                            openAnimF:SetScript("OnUpdate", nil)
+                            self:SetScript("OnUpdate", nil)
                             self.DropDownList.Texture:SetTexture(0,0,0,1)
                             self.DropDownButton:EnableMouse(true)
                             for i = 1, #self.DropDownList.Elements.DisplayOrders do
@@ -414,11 +413,10 @@ Engine[1].CreateNewFrame = function(s, parent)
                     self.DropDownList.Elements[i]:EnableMouse(false)
                 end
 
-                local openAnimF = CreateFrame("Frame")
                 local animSpeed
                 local alpha = 1
                 local indexEl = #self.DropDownList.Elements.DisplayOrders
-                openAnimF:SetScript("OnUpdate", function()
+                self:SetScript("OnUpdate", function()
                     self.DropDownList.Elements[self.DropDownList.Elements.DisplayOrders[indexEl]]:SetAlpha(alpha)
                     if (GetFramerate() < 30) then
                         animSpeed = 3
@@ -435,7 +433,7 @@ Engine[1].CreateNewFrame = function(s, parent)
                         alpha = 1
                         indexEl = indexEl - 1
                         if (indexEl < 1) then
-                            openAnimF:SetScript("OnUpdate", nil)
+                            self:SetScript("OnUpdate", nil)
                             self.DropDownList:Hide()
                             self.DropDownButton:EnableMouse(true)
                             for i = 1, #self.DropDownList.Elements.DisplayOrders do
@@ -1191,8 +1189,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
             local fontHeight = Engine[2].SettingsWindow.MenuBar.ButtonFontHeight
             local w, h = Engine[2].SettingsWindow.MenuBar.ButtonsWidth+15, Engine[2].SettingsWindow.MenuBar.ButtonsHeight+15
             local animSpeed = 0
-            local anim = CreateFrame("Frame")
-            anim:SetScript("OnUpdate", function()
+            Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetScript("OnUpdate", function()
                 if (GetFramerate() < 10) then
                     animSpeed = 20
                 elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
@@ -1205,7 +1202,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
                 Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetWidth(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetWidth() + (w / animSpeed))
                 Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetHeight(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() + (h / animSpeed)*6.60)
                 if (Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() >= h) then
-                    anim:SetScript("OnUpdate", nil)
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetScript("OnUpdate", nil)
                     Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetSize(w, h)
                     Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:SetFont(fontName, fontHeight+1)
                 end
@@ -1244,8 +1241,8 @@ Engine[1].InitAddon = function(s, fileName, name, version)
             local fontHeight = Engine[2].SettingsWindow.MenuBar.ButtonFontHeight
             local w, h = Engine[2].SettingsWindow.MenuBar.ButtonsWidth, Engine[2].SettingsWindow.MenuBar.ButtonsHeight
             local animSpeed = 0
-            local anim = CreateFrame("Frame")
-            anim:SetScript("OnUpdate", function()
+            
+            Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetScript("OnUpdate", function()
                 if (GetFramerate() < 10) then
                     animSpeed = 20
                 elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
@@ -1258,7 +1255,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
                 Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetWidth(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetWidth() - (w / animSpeed))
                 Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetHeight(Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() - (h / animSpeed)*6.66)
                 if (Engine[2].SettingsWindow.MenuBar.Buttons[i]:GetHeight() <= h) then
-                    anim:SetScript("OnUpdate", nil)
+                    Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetScript("OnUpdate", nil)
                     Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetSize(w, h)
                     Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:SetFont(fontName, fontHeight)
                 end
@@ -1285,6 +1282,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
             end
         end
     end
+    Engine[2].SettingsWindow.AnimF = CreateFrame("Frame")
     Engine[2].SettingsWindow.Close = function()
         Engine[2].SettingsWindow.Texture:SetVertexColor(0,0,0,.9)
         local children = {Engine[2].SettingsWindow:GetChildren()}
@@ -1294,8 +1292,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
 
         local w, h = Engine[2].SettingsWindow:GetWidth(), Engine[2].SettingsWindow:GetHeight()
         local animSpeed = 0
-        local anim = CreateFrame("Frame")
-        anim:SetScript("OnUpdate", function()
+        Engine[2].SettingsWindow.AnimF:SetScript("OnUpdate", function()
             if (GetFramerate() < 10) then
                 animSpeed = 4
             elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
@@ -1308,7 +1305,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
             Engine[2].SettingsWindow:SetWidth(Engine[2].SettingsWindow:GetWidth() - (w / animSpeed))
             Engine[2].SettingsWindow:SetHeight(Engine[2].SettingsWindow:GetHeight() - (h / animSpeed))
             if (Engine[2].SettingsWindow:GetHeight() <= 0) then
-                anim:SetScript("OnUpdate", nil)
+                Engine[2].SettingsWindow.AnimF:SetScript("OnUpdate", nil)
                 Engine[2].SettingsWindow:Hide()
             end
         end)
@@ -1322,8 +1319,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
         Engine[2].SettingsWindow:Show()
         local w, h = Engine[2].SettingsWindow.Width, Engine[2].SettingsWindow.Height
         local animSpeed = 0
-        local anim = CreateFrame("Frame")
-        anim:SetScript("OnUpdate", function()
+        Engine[2].SettingsWindow.AnimF:SetScript("OnUpdate", function()
             if (GetFramerate() < 10) then
                 animSpeed = 4
             elseif (GetFramerate() < 30 and GetFramerate() >= 10) then
@@ -1336,7 +1332,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
             Engine[2].SettingsWindow:SetWidth(Engine[2].SettingsWindow:GetWidth() + (w / animSpeed))
             Engine[2].SettingsWindow:SetHeight(Engine[2].SettingsWindow:GetHeight() + (h / animSpeed))
             if (Engine[2].SettingsWindow:GetHeight() >= h) then
-                anim:SetScript("OnUpdate", nil)
+                Engine[2].SettingsWindow.AnimF:SetScript("OnUpdate", nil)
                 Engine[2].SettingsWindow:SetSize(w,h)
                 Engine[2].SettingsWindow:Show()
                 local children = {Engine[2].SettingsWindow:GetChildren()}

@@ -1,9 +1,9 @@
 local AddOnName, Engine = ...
 LoutenLib, LGCH = unpack(Engine)
 
-LoutenLib:InitAddon("LangChanger", "Language Changer", "1.3")
+LoutenLib:InitAddon("LangChanger", "Language Changer", "1.3.1")
 LGCH:SetChatPrefixColor("c41f1f")
-LGCH:SetRevision("2023", "08", "31", "01", "00", "00")
+LGCH:SetRevision("2023", "09", "24", "00", "01", "00")
 LGCH:LoadedFunction(function()
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
     LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
@@ -73,6 +73,7 @@ LGCH.Events:SetScript("OnEvent", function (s, e)
         local diffLangs = LoutenLib:FindingDiffInTwoArray(tempLangList, LGCH.LangList)
         if (#diffLangs>0) then
             if (#LGCH.LangList>#tempLangList) then
+                LGCH.ForceStop = "none"
                 for i = 1, #diffLangs do
                     LGCH.LangFrame.DropDownList:RemoveElementByText(diffLangs[i])
                 end
@@ -85,6 +86,7 @@ LGCH.Events:SetScript("OnEvent", function (s, e)
                     LGCH.ChangeLang(LGCH.GetDefaultLanguage())
                 end
             elseif (#LGCH.LangList<#tempLangList) then
+                LGCH.ForceStop = "none"
                 LGCH.InitLangs()
                 LGCH.InitActualLangsList()
                 local i = #LGCH.LangFrame.DropDownList.Elements.DisplayOrders
@@ -96,7 +98,6 @@ LGCH.Events:SetScript("OnEvent", function (s, e)
                     LGCH.LangFrame.DropDownList:AddElement(LGCH.ActualLangList[i])
                 end
                 LGCH.SetLangs()
-                LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.Lang)
                 if (ChatMenu.chatFrame.editBox.language ~= LGCH.Lang) then
                     LGCH.ChangeLang(LGCH.Lang)
                 end
