@@ -12,7 +12,7 @@ _G[AddOnName] = Engine
 local dropdownlists = {}
 local streams = {}
 
-Engine[1].LibVersion = "1.1b"
+Engine[1].LibVersion = "1.2a"
 
 
 
@@ -690,8 +690,8 @@ Engine[1].CreateNewFrame = function(s, parent)
 
         if (addBorders) then
             self:SetBackdrop({
-                bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-                edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                bgFile = "Interface\\Buttons\\WHITE8x8",
+                edgeFile = "Interface\\Buttons\\WHITE8x8",
                 edgeSize = bordersSize,
                 insets = {left = insets, right = insets, top = insets, bottom = insets},
             });
@@ -867,18 +867,21 @@ Engine[1].InitAddon = function(s, fileName, name, version)
     ------------------
     -- Addon Loaded --
     Engine[2].LoadedFunction = function(self, func)
+        print("")
+        Engine[2]:PrintMsg("Аддон загружен: v"..Engine[2].Info.Version, "a9ffa6")
         Engine[2].LoadedFunc = func
+        Engine[2].LoadedFunc()
     end
     Engine[2].LoadedFunc = nil
-    Engine[2].Loaded = CreateFrame("Frame")
-    Engine[2].Loaded:RegisterEvent("ADDON_LOADED")
-    Engine[2].Loaded:SetScript("OnEvent", function(s, event, addOnName)
-        if (addOnName == Engine[2].Info.FileName) then
-            print("")
-            Engine[2]:PrintMsg("Аддон загружен: v"..Engine[2].Info.Version, "a9ffa6")
-            if (Engine[2].LoadedFunction) then Engine[2].LoadedFunc() end
-        end
-    end)
+    -- Engine[2].Loaded = CreateFrame("Frame")
+    -- Engine[2].Loaded:RegisterEvent("PLAYER_LOGIN")
+    -- Engine[2].Loaded:SetScript("OnEvent", function(s, event, addOnName)
+        -- if (addOnName == Engine[2].Info.FileName) then
+        --     print("")
+        --     Engine[2]:PrintMsg("Аддон загружен: v"..Engine[2].Info.Version, "a9ffa6")
+        --     if (Engine[2].LoadedFunction) then Engine[2].LoadedFunc() end
+        -- end
+    -- end)
     -- Addon Loaded --
     ------------------
 
@@ -1051,10 +1054,13 @@ Engine[1].InitAddon = function(s, fileName, name, version)
             red = 230, green = 230, blue = 230
         },
         ["gold"] = {
-            red = 255, green = 215, blue = 1
+            red = 225, green = 190, blue = 1
+        },
+        ["violet"] = {
+            red = 121, green = 0, blue = 181
         }
     }
-    Engine[2].SettingsWindow.WindowStyle = "red"
+    Engine[2].SettingsWindow.WindowStyle = "violet"
     Engine[2].SettingsWindow.GetStyle = function()
         return Engine[2].SettingsWindow.WindowStyle
     end
@@ -1098,28 +1104,50 @@ Engine[1].InitAddon = function(s, fileName, name, version)
                                                             end)
         -- menu bar
     Engine[2].SettingsWindow.MenuBar = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow)
-    Engine[2].SettingsWindow.MenuBar:InitNewFrame(Engine[2].SettingsWindow:GetWidth()*0.25, Engine[2].SettingsWindow:GetHeight()-Engine[2].SettingsWindow.Header:GetHeight()-10,
+    Engine[2].SettingsWindow.MenuBar:InitNewFrame2(Engine[2].SettingsWindow:GetWidth()*0.23, Engine[2].SettingsWindow:GetHeight()-Engine[2].SettingsWindow.Header:GetHeight()-10,
                                                     "LEFT", Engine[2].SettingsWindow, "LEFT", 10, -8,
-                                                    .035,.035,.035,1, true)
+                                                    9,9,9,1, true)
     Engine[2].SettingsWindow.MenuBar:SetFrameLevel(Engine[2].SettingsWindow.MenuBar:GetFrameLevel()-1)
     -- Engine[2].SettingsWindow.MenuBar.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\settings_bg.blp")
     -- Engine[2].SettingsWindow.MenuBar.Texture:SetVertexColor(.1,.1,.1,1)
 
         -- main panel
     Engine[2].SettingsWindow.MainPanel = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow)
-    Engine[2].SettingsWindow.MainPanel:InitNewFrame(Engine[2].SettingsWindow:GetWidth()*0.711, Engine[2].SettingsWindow:GetHeight()-Engine[2].SettingsWindow.Header:GetHeight()-10,
+    Engine[2].SettingsWindow.MainPanel:InitNewFrame(Engine[2].SettingsWindow:GetWidth()*0.731, Engine[2].SettingsWindow:GetHeight()-Engine[2].SettingsWindow.Header:GetHeight()-10,
                                                     "RIGHT", Engine[2].SettingsWindow, "RIGHT", -10, -8,
                                                     .035,.035,.035,1, true)
     Engine[2].SettingsWindow.MainPanel:SetFrameLevel(Engine[2].SettingsWindow.MainPanel:GetFrameLevel()-1)
     Engine[2].SettingsWindow.MainPanel:Hide()
-    -- Engine[2].SettingsWindow.MainPanel.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\textures\\settings_bg.blp")
-    -- Engine[2].SettingsWindow.MainPanel.Texture:SetVertexColor(.1,.1,.1,1)
+    -- LoutenLib Animation 
+    Engine[2].SettingsWindow.MainPanel.Animation = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.MainPanel)
+    Engine[2].SettingsWindow.MainPanel.Animation:InitNewFrame(Engine[2].SettingsWindow.MainPanel:GetWidth(), Engine[2].SettingsWindow.MainPanel:GetHeight(),
+                                                                "CENTER", Engine[2].SettingsWindow.MainPanel, "CENTER", 0,0,
+                                                                1,1,1,1)
+    Engine[2].SettingsWindow.MainPanel.Animation.Time = GetTime()
+    Engine[2].SettingsWindow.MainPanel.Animation.Frame = 0
+    Engine[2].SettingsWindow.MainPanel.Animation.Interval = 0
+    Engine[2].SettingsWindow.MainPanel.Animation:SetScript("OnUpdate", function ()
+        if (GetTime() >= Engine[2].SettingsWindow.MainPanel.Animation.Time + Engine[2].SettingsWindow.MainPanel.Animation.Interval) then
+            Engine[2].SettingsWindow.MainPanel.Animation.Texture:SetTexture("Interface\\AddOns\\"..Engine[2].Info.FileName.."\\libs\\LoutenLib\\Animations\\Settings\\Frames\\"..Engine[2].SettingsWindow.MainPanel.Animation.Frame..".blp")
+            Engine[2].SettingsWindow.MainPanel.Animation.Frame = Engine[2].SettingsWindow.MainPanel.Animation.Frame + 1
+            if (Engine[2].SettingsWindow.MainPanel.Animation.Frame == 88) then
+                Engine[2].SettingsWindow.MainPanel.Animation.Frame = 0
+            end
+            if (Engine[2].SettingsWindow.MainPanel.Animation.Frame == 62) then
+                Engine[2].SettingsWindow.MainPanel.Animation.Interval = 7
+            else
+                Engine[2].SettingsWindow.MainPanel.Animation.Interval = 0.024
+            end
+            Engine[2].SettingsWindow.MainPanel.Animation.Time = GetTime()
+        end
+    end)
+
 
 
         -- functions
     Engine[2].SettingsWindow.MenuBar.ButtonsWidth = Engine[2].SettingsWindow.MenuBar:GetWidth()
-    Engine[2].SettingsWindow.MenuBar.ButtonsHeight = 33
-    Engine[2].SettingsWindow.MenuBar.ButtonFontHeight = 12
+    Engine[2].SettingsWindow.MenuBar.ButtonsHeight = 30
+    Engine[2].SettingsWindow.MenuBar.ButtonFontHeight = 11
     Engine[2].SettingsWindow.MenuBar.AddNewBarButton = function(s, buttonText, addScroll)
         Engine[2].SettingsWindow.MenuBar.Buttons = Engine[2].SettingsWindow.MenuBar.Buttons or {}
         local i = #Engine[2].SettingsWindow.MenuBar.Buttons + 1
@@ -1150,6 +1178,7 @@ Engine[1].InitAddon = function(s, fileName, name, version)
                                                                         end
                                                                         Engine[2].SettingsWindow.MainPanel:Show()
                                                                         Engine[2].SettingsWindow.MainPanel.Windows[i]:Show()
+                                                                        Engine[2].SettingsWindow.MainPanel.Animation:SetAlpha(.2)
                                                                     end)
         Engine[2].SettingsWindow.MenuBar.Buttons[i]:SetTextToFrame("CENTER", Engine[2].SettingsWindow.MenuBar.Buttons[i], "CENTER", 0, 1, true, Engine[2].SettingsWindow.MenuBar.ButtonFontHeight, buttonText)
         if (Engine[2].SettingsWindow:GetStyle() == "white") then
@@ -1271,6 +1300,11 @@ Engine[1].InitAddon = function(s, fileName, name, version)
         Engine[2].SettingsWindow.MainPanel.Windows[i]:InitNewFrame(Engine[2].SettingsWindow.MainPanel:GetWidth()-5, Engine[2].SettingsWindow.MainPanel:GetHeight()-5,
                                                     "CENTER", Engine[2].SettingsWindow.MainPanel, "CENTER", 0,0,
                                                     0,0,0,0, true)
+        Engine[2].SettingsWindow.MainPanel.Windows[i].Title = Engine[1]:CreateNewFrame(Engine[2].SettingsWindow.MainPanel.Windows[i])
+        Engine[2].SettingsWindow.MainPanel.Windows[i].Title:InitNewFrame(200, 50,
+                                                                        "TOP", Engine[2].SettingsWindow.MainPanel.Windows[i], "TOP", 0,0,
+                                                                        0,0,0,0)
+        Engine[2].SettingsWindow.MainPanel.Windows[i].Title:SetTextToFrame("CENTER", Engine[2].SettingsWindow.MainPanel.Windows[i].Title, "CENTER", 0,0, true, 16, Engine[2].SettingsWindow.MenuBar.Buttons[i].Text:GetText())
         if (addScroll) then Engine[2].SettingsWindow.MainPanel.Windows[i]:AddScrollToFrame() end
         Engine[2].SettingsWindow.MainPanel.Windows[i]:Hide()
     end
