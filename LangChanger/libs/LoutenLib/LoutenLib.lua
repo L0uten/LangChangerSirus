@@ -12,7 +12,7 @@ _G[AddOnName] = Engine
 local dropdownlists = {}
 local streams = {}
 
-Engine[1].LibVersion = "1.2a"
+Engine[1].LibVersion = "1.2b"
 
 
 
@@ -241,9 +241,17 @@ Engine[1].CreateNewFrame = function(s, parent)
         self:SetScript("OnMouseUp", function (s, b)
             self.IsPressed = false
             if (self:IsMouseOver()) then
-                self.Texture:SetTexture(redColorOnMouseUp, greenColorOnMouseUp, blueColorOnMouseUp, alpha)
+                if (self:IsTexture()) then
+                    self.Texture:SetTexture(redColorOnMouseUp, greenColorOnMouseUp, blueColorOnMouseUp, alpha)
+                else
+                    self:SetBackdropColor(redColorOnMouseUp, greenColorOnMouseUp, blueColorOnMouseUp, alpha)
+                end
             else
-                self.Texture:SetTexture(redColorOnLeave, greenColorOnLeave, blueColorOnLeave, alpha)
+                if (self:IsTexture()) then
+                    self.Texture:SetTexture(redColorOnLeave, greenColorOnLeave, blueColorOnLeave, alpha)
+                else
+                    self:SetBackdropColor(redColorOnLeave, greenColorOnLeave, blueColorOnLeave, alpha)
+                end
             end
             if (b == "LeftButton") then if (functionOnMouseUp) then functionOnMouseUp() end end
             if (b == "RightButton") then if (functionOnMouseUpRight) then functionOnMouseUpRight() end end
@@ -290,19 +298,93 @@ Engine[1].CreateNewFrame = function(s, parent)
     end
 
     function uiFrame:InitNewCheckButton(size, setChecked, text, boldText, textSize, functionOnClick)
-        self.CheckButton = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
-        self.CheckButton:SetSize(size, size)
-        self.CheckButton:SetPoint("LEFT", self, "LEFT", -3, 0)
-        self.CheckButton:SetChecked(setChecked)
+        -- self.CheckButton = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
+        -- self.CheckButton:SetSize(size, size)
+        -- self.CheckButton:SetPoint("LEFT", self, "LEFT", -3, 0)
+        -- self.CheckButton:SetChecked(setChecked)
         
+        -- if (text) then
+        --     self:SetTextToFrame("LEFT", self, "LEFT", 24, 2, boldText, textSize, text)
+        --     self.Text:SetJustifyH("LEFT")
+        -- end
+    
+        -- self.CheckButton:SetScript("OnClick", function()
+        --     if (functionOnClick) then functionOnClick() end
+        -- end)
+
+        self.CheckButton = Engine[1]:CreateNewFrame(self)
+        self.CheckButton.IsChecked = false
+        function self.CheckButton:Func()
+            self:SetChecked(not self:GetChecked())
+            if (functionOnClick) then functionOnClick() end
+            if (self:GetChecked() == true) then
+                self:InitNewButton2(235, 196, 2, 1, function()
+                self:Func()
+                end)
+            elseif (self:GetChecked() == false) then
+                self:InitNewButton2(153, 153, 153, 1, function()
+                self:Func()
+                end)
+            end
+
+            if (self.FunctionOnClick) then self.FunctionOnClick() end
+        end
+
+        self.CheckButton:InitNewFrame2(size, size,
+                                        "LEFT", self, "LEFT", 0, 0,
+                                        153, 153, 153,1, true)
+        self.CheckButton:InitNewButton2(153, 153, 153, 1, function()
+            self.CheckButton:Func()
+        end)
         if (text) then
-            self:SetTextToFrame("LEFT", self, "LEFT", 24, 2, boldText, textSize, text)
+            self:SetTextToFrame("LEFT", self.CheckButton, "RIGHT", 5, 2, boldText, textSize, text)
             self.Text:SetJustifyH("LEFT")
         end
-    
-        self.CheckButton:SetScript("OnClick", function()
-            if (functionOnClick) then functionOnClick() end
-        end)
+
+        function self.CheckButton:SetChecked(checked)
+            if (type(checked) == "boolean") then
+                self.IsChecked = checked
+
+                if (self:GetChecked() == true) then
+                    self:SetBackdropColor(Engine[1]:RGBToWowColors(235), Engine[1]:RGBToWowColors(196),Engine[1]:RGBToWowColors(2),1)
+                    self:InitNewButton2(235, 196, 2, 1, function()
+                        self:Func()
+                    end)
+                elseif (self:GetChecked() == false) then
+                    self:SetBackdropColor(Engine[1]:RGBToWowColors(153), Engine[1]:RGBToWowColors(153),Engine[1]:RGBToWowColors(153),1)
+                    self:InitNewButton2(153, 153, 153, 1, function()
+                        self:Func()
+                    end)
+                end
+            end
+        end
+
+        function self.CheckButton:GetChecked()
+            return self.IsChecked
+        end
+
+        function self.CheckButton:Disable()
+            self:EnableMouse(false)
+            self:SetBackdropColor(Engine[1]:RGBToWowColors(77), Engine[1]:RGBToWowColors(77),Engine[1]:RGBToWowColors(77),1)
+        end
+
+        function self.CheckButton:Enable()
+            self:EnableMouse(true)
+            if (self.IsChecked) then
+                self:SetBackdropColor(Engine[1]:RGBToWowColors(235), Engine[1]:RGBToWowColors(196),Engine[1]:RGBToWowColors(2),1)
+            else
+                self:SetBackdropColor(Engine[1]:RGBToWowColors(153), Engine[1]:RGBToWowColors(153),Engine[1]:RGBToWowColors(153),1)
+            end
+        end
+
+        function self.CheckButton:SetFunctionOnClick(func)
+            if (func) then self.FunctionOnClick = func end
+        end
+
+        self.CheckButton:TextureToBackdrop(true, 2, 2, 0,0,0,1, Engine[1]:RGBToWowColors(153), Engine[1]:RGBToWowColors(153),Engine[1]:RGBToWowColors(153),1)
+        if (setChecked) then
+            self.CheckButton:SetChecked(setChecked)
+        end
     end
 
     function uiFrame:InitNewDropDownList(red, green, blue, alpha, sideToOpen, elementsType, dropDownButtonText, arrayWithElementsText, arrayWithElementsFuncs,
@@ -728,6 +810,12 @@ Engine[1].CreateNewFrame = function(s, parent)
         end
     end
 
+    function uiFrame:SetTextureColor(red, green, blue, alpha)
+        if (uiFrame.Texture) then
+            uiFrame.Texture:SetTexture(Engine[1]:RGBToWowColors(red), Engine[1]:RGBToWowColors(green), Engine[1]:RGBToWowColors(blue), alpha)
+        end
+    end
+
     return uiFrame
 end
 
@@ -809,7 +897,6 @@ Engine[1].RGBToWowColors = function(s, color)
         colorButton = color/255 - 0.1
         if (colorButton < 0) then colorButton = 0 end
     end
-    print(colorButton)
     return colorButton
 end
 
