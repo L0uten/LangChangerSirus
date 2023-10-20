@@ -175,7 +175,9 @@ function LGCH.InitNewSettings()
                                                                                 function()
                                                                                     LGCH.SettingsWindow.MainPanel.Windows[wi2]:EnableMouse(false)
                                                                                     for i = 1, #LGCH.LangList do
-                                                                                        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.LangList[i])].CheckButton:SetChecked(false)
+                                                                                        if (LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.LangList[i])].CheckButton) then
+                                                                                            LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.LangList[i])].CheckButton:SetChecked(false)
+                                                                                        end
                                                                                     end
                                                                                     for i = 1, #LGCH.LangList do
                                                                                         if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == true) then
@@ -196,12 +198,7 @@ function LGCH.InitNewSettings()
                                             "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton, "TOPLEFT", 0, -(30*i),
                                             0,0,0,0, true, false, nil)
                                             
-        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:InitNewCheckButton(23, false, "", true, 11, function()end)
-        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i].CheckButton:SetBackdrop({
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = 15,
-        })
-        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i].CheckButton:SetBackdropBorderColor(1,1,1,.1)
+        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:InitNewCheckButton(20, false, "", true, 11, function()end)
         LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:Hide()
     end
 end
@@ -216,18 +213,18 @@ function LGCH.RefreshSettings()
         LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:Show()
         LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i].Text:SetText(LGCH.LangList[i])
         LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i].CheckButton:SetChecked(LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]])
-        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i].CheckButton:SetScript("OnClick", function()
-            LGCH.SettingsWindow.MainPanel.Windows[wi2]:EnableMouse(false)
-            LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] = not LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]]
-            LGCH.InitActualLangsList()
-            if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == false) then
-                LGCH.LangFrame.DropDownList:RemoveElementByText(LGCH.LangList[i])
-            else
-                LGCH.LangFrame.DropDownList:AddElementByOrder(LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.LangList[i]), LGCH.LangList[i])
-            end
-            LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.GetDefaultLanguage()) or 1
-            LGCH.SetLangs()
-            LGCH.SettingsWindow.MainPanel.Windows[wi2]:EnableMouse(true)
+        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i].CheckButton:SetFunctionOnClick(function()
+                LGCH.SettingsWindow.MainPanel.Windows[wi2]:EnableMouse(false)
+                LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] = not LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]]
+                LGCH.InitActualLangsList()
+                if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == false) then
+                    LGCH.LangFrame.DropDownList:RemoveElementByText(LGCH.LangList[i])
+                else
+                    LGCH.LangFrame.DropDownList:AddElementByOrder(LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.LangList[i]), LGCH.LangList[i])
+                end
+                LGCH.LangIndex = LoutenLib:IndexOf(LGCH.ActualLangList, LGCH.GetDefaultLanguage()) or 1
+                LGCH.SetLangs()
+                LGCH.SettingsWindow.MainPanel.Windows[wi2]:EnableMouse(true)
         end)
     end
 end
