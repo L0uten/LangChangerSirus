@@ -2,27 +2,22 @@ local AddOnName, Engine = ...
 local LoutenLib, LGCH = unpack(Engine)
 
 function LGCH.InitNewSettings()
-    if (LGCH_DB.Profiles[UnitName("player")].IsShown == nil) then
-        LGCH_DB.Profiles[UnitName("player")].IsShown = true
-    end
-    if (LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown == nil) then
-        LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown = false
-    end
-    LGCH_DB.Profiles[UnitName("player")].ActiveLangs = LGCH_DB.Profiles[UnitName("player")].ActiveLangs or {}
-
     LGCH.SettingsWindow.MenuBar:AddNewBarButton("Настройка окна")
     LGCH.SettingsWindow.MenuBar:AddNewBarButton("Управление языками", true)
+    LGCH.SettingsWindow.MenuBar:AddNewBarButton("Автоматическая смена языка")
 
-    local wi1 = LGCH.SettingsWindow:GetIndexByText("Настройка окна")
+    local wi1 = LGCH.SettingsWindow:GetMenuBarButtonIndexByText("Настройка окна")
+    local wi2 = LGCH.SettingsWindow:GetMenuBarButtonIndexByText("Управление языками")
+    local wi3 = LGCH.SettingsWindow:GetMenuBarButtonIndexByText("Автоматическая смена языка")
+    
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1 = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1:InitNewFrame(1,1,
                                                                 "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1], "TOPLEFT", 35, -20-(LGCH.SettingsWindow.MainPanel.Windows[wi1].Title:GetHeight()),
                                                                 1,0,0,0)
-    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1, "LEFT", 0,0, false, 14, "Вы можете поменять сторону открытия списка языков:")
-    LGCH_DB.Profiles[UnitName("player")].OpenTo = LGCH_DB.Profiles[UnitName("player")].OpenTo or "down"
+    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1, "LEFT", 0,0, false, 13, "Вы можете поменять сторону открытия списка языков:")
     LGCH.SettingsWindow.MainPanel.Windows[wi1].OpenTo = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
     LGCH.SettingsWindow.MainPanel.Windows[wi1].OpenTo:InitNewFrame(120, 20,
-                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1, "TOPLEFT", 0, -20,
+                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info1, "TOPLEFT", 0, -15,
                                                                 0,0,0,1, true)
     LGCH.SettingsWindow.MainPanel.Windows[wi1].OpenTo:InitNewDropDownList(  LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                             LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
@@ -41,26 +36,21 @@ function LGCH.InitNewSettings()
                                                                     LGCH_DB.Profiles[UnitName("player")].OpenTo = "down"
                                                                     LGCH.SettingsWindow.MainPanel.Windows[wi1].OpenTo.DropDownList:Close()
                                                                 end})
-    for i = 1, #LGCH.LangList do
-        if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == nil) then
-            LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] = true
-        end
-    end
     
 
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2 = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2:InitNewFrame(1,1,
                                                                 "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].OpenTo, "TOPLEFT", 0, -50,
                                                                 1,0,0,0)
-    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2, "LEFT", 0,0, false, 14, "Сбросить позицию окна с языками в центр:")
+    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2, "LEFT", 0,0, false, 13, "Сбросить позицию окна с языками в центр:")
     LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
     LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos:InitNewFrame2(120, 20,
-                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2, "TOPLEFT", 0, -20,
+                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info2, "TOPLEFT", 0, -15,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].blue,
                                                                 1, true)
-    LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos, "CENTER", 0,0, true, 11, "Сбросить")
+    LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos, "CENTER", 0,0, true, 10, "Сбросить")
     LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos:InitNewButton2(LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                         LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
                                                                         LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].blue,
@@ -74,18 +64,18 @@ function LGCH.InitNewSettings()
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3:InitNewFrame(1,1,
                                                                 "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].ResetPos, "TOPLEFT", 0, -50,
                                                                 1,0,0,0)
-    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3, "LEFT", 0,0, false, 14, "Скрыть или показать окно:")
+    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3, "LEFT", 0,0, false, 13, "Скрыть или показать окно:")
     LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
     LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow:InitNewFrame2(120, 20,
-                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3, "TOPLEFT", 0, -20,
+                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info3, "TOPLEFT", 0, -15,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].blue,
                                                                 1, true)
     if (LGCH_DB.Profiles[UnitName("player")].IsShown) then
-        LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow, "CENTER", 0,0, true, 11, "Скрыть")
+        LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow, "CENTER", 0,0, true, 10, "Скрыть")
     else
-        LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow, "CENTER", 0,0, true, 11, "Показать")
+        LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow, "CENTER", 0,0, true, 10, "Показать")
     end
     LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow:InitNewButton2(LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                         LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
@@ -105,16 +95,15 @@ function LGCH.InitNewSettings()
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4:InitNewFrame(1,1,
                                                                 "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].HideOrShow, "TOPLEFT", 0, -50,
                                                                 1,0,0,0)
-    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4, "LEFT", 0,0, false, 14, "Вы можете переместить окно с языками разблокировав его:")
+    LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4, "LEFT", 0,0, false, 13, "Вы можете переместить окно с языками разблокировав его:")
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi1])
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock:InitNewFrame2(120, 20,
-                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4, "TOPLEFT", 0, -20,
+                                                                "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi1].Info4, "TOPLEFT", 0, -15,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
                                                                 LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].blue,
                                                                 1, true)
-
-    LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock, "CENTER", 0,0, true, 11, "Разблокировать")
+    LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock, "CENTER", 0,0, true, 10, "Разблокировать")
 
     LGCH.SettingsWindow.MainPanel.Windows[wi1].Unlock:InitNewButton2(LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].red,
                                                                         LGCH.SettingsWindow.WindowStylesInRGB[LGCH.SettingsWindow:GetStyle()].green,
@@ -140,15 +129,15 @@ function LGCH.InitNewSettings()
 
 
 
-    local wi2 = LGCH.SettingsWindow:GetIndexByText("Управление языками")
+
     LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1 = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi2])
     LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1:InitNewFrame(1,1,
                                                                 "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2], "TOPLEFT", 35, -20-(LGCH.SettingsWindow.MainPanel.Windows[wi2].Title:GetHeight()),
                                                                 1,0,0,0)
-    LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1, "LEFT", 0,0, false, 14, "Вы можете отключить/включить определенный язык:")
+    LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1:SetTextToFrame("LEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1, "LEFT", 0,0, false, 13, "Вы можете отключить/включить определенный язык:")
     LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi2])
     LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton:InitNewFrame2(100, 20,
-                                                                        "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1, "TOPLEFT", 0, -20,
+                                                                        "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2].Info1, "TOPLEFT", 0, -15,
                                                                         50, 168, 82, 1, true)
     LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton:SetTextToFrame("CENTER", LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton, "CENTER", 0,0, true, 10, "Включить все")
     LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton:InitNewButton2(50, 168, 82, 1, 
@@ -198,13 +187,40 @@ function LGCH.InitNewSettings()
                                             "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi2].OnAllButton, "TOPLEFT", 0, -(30*i),
                                             0,0,0,0, true, false, nil)
                                             
-        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:InitNewCheckButton(20, false, "", true, 11, function()end)
+        LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:InitNewCheckButton(18, false, "", true, 10, function()end)
         LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:Hide()
     end
+
+
+
+
+
+
+
+
+
+
+    LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangRaidCB = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi3])
+    LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangRaidCB:InitNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi3]:GetWidth(), 30,
+                                                                            "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi3], "TOPLEFT", 35, -20-(LGCH.SettingsWindow.MainPanel.Windows[wi3].Title:GetHeight()),
+                                                                            0,0,0,0, true, false, nil)
+                                            
+    LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangRaidCB:InitNewCheckButton(18, LGCH_DB.Profiles[UnitName("player")].AutoLangRaid, "Автоматически менять язык в РЕЙДЕ на подходящий", true, 10, function()
+        LGCH_DB.Profiles[UnitName("player")].AutoLangRaid = not LGCH_DB.Profiles[UnitName("player")].AutoLangRaid
+    end)
+
+    LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangPartyCB = LoutenLib:CreateNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi3])
+    LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangPartyCB:InitNewFrame(LGCH.SettingsWindow.MainPanel.Windows[wi3]:GetWidth(), 30,
+                                                                            "TOPLEFT", LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangRaidCB, "TOPLEFT", 0, -30,
+                                                                            0,0,0,0, true, false, nil)
+                                            
+    LGCH.SettingsWindow.MainPanel.Windows[wi3].AutoLangPartyCB:InitNewCheckButton(18, LGCH_DB.Profiles[UnitName("player")].AutoLangParty, "Автоматически менять язык в ГРУППЕ на подходящий", true, 10, function()
+        LGCH_DB.Profiles[UnitName("player")].AutoLangParty = not LGCH_DB.Profiles[UnitName("player")].AutoLangParty
+    end)
 end
 
 function LGCH.RefreshSettings()
-    local wi2 = LGCH.SettingsWindow:GetIndexByText("Управление языками")
+    local wi2 = LGCH.SettingsWindow:GetMenuBarButtonIndexByText("Управление языками")
     for i = 1, #LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB do
         LGCH.SettingsWindow.MainPanel.Windows[wi2].LangsCB[i]:Hide()
     end

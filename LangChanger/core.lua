@@ -4,10 +4,16 @@ local LoutenLib, LGCH = unpack(Engine)
 local Init = CreateFrame("Frame")
 Init:RegisterEvent("PLAYER_LOGIN")
 Init:SetScript("OnEvent", function()
-    LoutenLib:InitAddon("LangChanger", "Language Changer", "1.3.4")
+    LoutenLib:InitAddon("LangChanger", "Language Changer", "1.4")
+    LGCH:SetWebInfo("https://discord.gg/TubeZVD",
+                    "https://forum.sirus.su/threads/langchanger.331990/",
+                    "https://github.com/L0uten/LangChangerSirus",
+                    "-",
+                    "Exboyfriend aka Louten")
     LGCH_DB = LoutenLib:InitDataStorage(LGCH_DB)
+    LGCH:InitDBVars()
     LGCH:SetChatPrefixColor("c41f1f")
-    LGCH:SetRevision("2023", "10", "20", "00", "00", "01")
+    LGCH:SetRevision("2024", "02", "13", "00", "01", "00")
     LGCH:LoadedFunction(function()
         LGCH:PrintMsg("/lgch или /langchanger - настройки языков.")
         LGCH:PrintMsg("Нажмите ПКМ чтобы заблокировать или разблокировать окно.")
@@ -118,12 +124,10 @@ function SendChatMessage(...)
         if (chatType == "CHANNEL") then
             local _, name = GetChannelName(tonumber(channel))
             if (tostring(name) == "Поиск спутников(О)") then
-                if (tostring(name) == "Поиск спутников(О)") then
-                    if (LGCH.ForceStop ~= "H") then
-                        LGCH.ForceStop = "H"
-                        if (LGCH.Lang ~= "орочий") then
-                            LGCH.ChangeLang("орочий", false)
-                        end
+                if (LGCH.ForceStop ~= "H") then
+                    LGCH.ForceStop = "H"
+                    if (LGCH.Lang ~= "орочий") then
+                        LGCH.ChangeLang("орочий", false)
                     end
                 end
             elseif (tostring(name) == "Поиск спутников(А)") then
@@ -144,15 +148,32 @@ function SendChatMessage(...)
                 LGCH.ForceStop = "none"
             end
         end
-        if (chatType == "RAID" or "RAID_WARNING" and IsInRaid()) then
-            for i = 1, GetNumRaidMembers() do
-                if (UnitDebuff("raid"..i, "Орда")) then
-                    LGCH.ChangeLang("орочий", false)
-                    break
+        if (LGCH_DB.Profiles[UnitName("player")].AutoLangRaid) then
+            if (chatType == "RAID" or "RAID_WARNING" and IsInRaid()) then
+                for i = 1, GetNumRaidMembers() do
+                    if (UnitDebuff("raid"..i, "Орда")) then
+                        LGCH.ChangeLang("орочий", false)
+                        break
+                    end
+                    if (UnitDebuff("raid"..i, "Альянс")) then
+                        LGCH.ChangeLang("всеобщий", false)
+                        break
+                    end
                 end
-                if (UnitDebuff("raid"..i, "Альянс")) then
-                    LGCH.ChangeLang("всеобщий", false)
-                    break
+            end
+        end
+        
+        if (LGCH_DB.Profiles[UnitName("player")].AutoLangParty) then
+            if (chatType == "PARTY" and IsInGroup()) then
+                for i = 1, GetNumGroupMembers() do
+                    if (UnitDebuff("party"..i, "Орда")) then
+                        LGCH.ChangeLang("орочий", false)
+                        break
+                    end
+                    if (UnitDebuff("party"..i, "Альянс")) then
+                        LGCH.ChangeLang("всеобщий", false)
+                        break
+                    end
                 end
             end
         end
@@ -196,6 +217,7 @@ function LGCH.CreateDropDown(standartLang)
     LGCH_DB.Profiles[UnitName("player")].OpenTo = LGCH_DB.Profiles[UnitName("player")].OpenTo or "down"
     
     LGCH.LangFrame = LoutenLib:CreateNewFrame(UIParent)
+    LGCH.LangFrame:SetFrameStrata("HIGH")
     LGCH.LangFrame:Hide()
     LGCH.LangFrame.UnlockButton = LoutenLib:CreateNewFrame(LGCH.LangFrame)
     LGCH.LangFrame.UnlockButton:Hide()
@@ -316,7 +338,20 @@ function LGCH.ChangeLang(lang, isForced, channelName)
     LGCH.LangFrame.DropDownList:Close()
 end
 
+function LGCH:InitDBVars()
+    LGCH_DB.Profiles[UnitName("player")].IsShown = LGCH_DB.Profiles[UnitName("player")].IsShown == nil and true or LGCH_DB.Profiles[UnitName("player")].IsShown
+    LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown = LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown == nil and false or LGCH_DB.Profiles[UnitName("player")].UnlockButtonIsShown
+    LGCH_DB.Profiles[UnitName("player")].ActiveLangs = LGCH_DB.Profiles[UnitName("player")].ActiveLangs or {}
+    LGCH_DB.Profiles[UnitName("player")].OpenTo = LGCH_DB.Profiles[UnitName("player")].OpenTo or "down"
+    for i = 1, #LGCH.LangList do
+        if (LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] == nil) then
+            LGCH_DB.Profiles[UnitName("player")].ActiveLangs[LGCH.LangList[i]] = true
+        end
+    end
 
+    LGCH_DB.Profiles[UnitName("player")].AutoLangRaid = LGCH_DB.Profiles[UnitName("player")].AutoLangRaid == nil and true or LGCH_DB.Profiles[UnitName("player")].AutoLangRaid
+    LGCH_DB.Profiles[UnitName("player")].AutoLangParty = LGCH_DB.Profiles[UnitName("player")].AutoLangParty == nil and true or LGCH_DB.Profiles[UnitName("player")].AutoLangParty
+end
 
 
 
